@@ -5,20 +5,24 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.std.composeexpensetracker.ui.HomeScreen
+import com.std.composeexpensetracker.ui.feature.HomeScreen
 import com.std.composeexpensetracker.ui.theme.ComposeExpenseTrackerTheme
+import com.std.composeexpensetracker.ui.theme.Zinc
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +33,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize(),
                     bottomBar = {
                         NavigationBar {
-                            NavigationRailItem(
+                            NavigationBarItem(
                                 selected = false,
                                 onClick = {},
                                 icon = {
@@ -37,7 +41,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
 
-                            NavigationRailItem(
+                            NavigationBarItem(
                                 selected = false,
                                 onClick = {},
                                 icon = {
@@ -61,14 +65,28 @@ fun Greeting() {
     ComposeExpenseTrackerTheme {
         Scaffold(modifier = Modifier.fillMaxSize(),
             bottomBar = {
-                NavigationBar {
-                    NavigationRailItem(
+                NavigationBar (modifier = Modifier.fillMaxWidth()) {
+                    NavigationBarItem(
                         selected = false,
                         onClick = {},
                         icon = {
                             Icon(imageVector = Icons.Default.Home, contentDescription = null)
                         }
                     )
+
+                    NavigationBarItem(
+                        selected = false,
+                        onClick = {},
+                        icon = {
+                            Icon(imageVector = Icons.Default.Star, contentDescription = null)
+                        }
+                    )
+                }
+            },
+            floatingActionButton = {
+                FloatingActionButton(onClick = {},
+                    containerColor = Zinc) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = null, tint = Color.White)
                 }
             }) { innerPadding ->
             HomeScreen(Modifier.padding(innerPadding))
