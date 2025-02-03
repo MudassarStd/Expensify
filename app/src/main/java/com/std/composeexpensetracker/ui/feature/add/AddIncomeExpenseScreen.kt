@@ -1,9 +1,8 @@
-package com.std.composeexpensetracker.ui.feature
+package com.std.composeexpensetracker.ui.feature.add
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,28 +12,22 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
 import com.std.composeexpensetracker.R
 import com.std.composeexpensetracker.ui.components.TopRowHeader
 import com.std.composeexpensetracker.ui.theme.Zinc
@@ -48,7 +41,7 @@ import com.std.composeexpensetracker.ui.theme.Zinc
 
 
 @Composable
-fun AddIncomeExpenseScreen(modifier: Modifier = Modifier) {
+fun AddIncomeExpenseScreen(modifier: Modifier = Modifier, navController: NavController) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
         // create refs
         val (bg, topRow, dataFormCard) = createRefs()
@@ -65,7 +58,7 @@ fun AddIncomeExpenseScreen(modifier: Modifier = Modifier) {
         TopRowHeader (modifier = Modifier
             .constrainAs(topRow) {
                 top.linkTo(parent.top)
-            }, title = "Add Expense")
+            }, title = "Add Expense", navController = navController)
 
 
         DataFormCard(modifier = Modifier.constrainAs(dataFormCard) {
@@ -154,5 +147,5 @@ fun DataFormCard(modifier: Modifier = Modifier) {
 @Preview (showBackground = true)
 @Composable
 private fun AddIncomeExpensePreview() {
-    AddIncomeExpenseScreen()
+//    AddIncomeExpenseScreen()
 }

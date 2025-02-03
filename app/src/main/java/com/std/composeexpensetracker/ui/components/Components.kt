@@ -16,12 +16,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @Composable
-fun TopRowHeader(modifier: Modifier = Modifier, title: String) {
+fun TopRowHeader(modifier: Modifier = Modifier, title: String, navController: NavController?) {
     Row (modifier = modifier
         .padding(top = 24.dp), verticalAlignment = Alignment.CenterVertically){
-        IconButton(onClick = {}) {
+        IconButton(onClick = { TODO("Implement onBackPressed here") }) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
                 contentDescription = null,

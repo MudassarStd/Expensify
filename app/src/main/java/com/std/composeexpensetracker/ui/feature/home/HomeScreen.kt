@@ -1,4 +1,4 @@
-package com.std.composeexpensetracker.ui.feature
+package com.std.composeexpensetracker.ui.feature.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -15,12 +15,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,15 +39,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
 import com.std.composeexpensetracker.R
+import com.std.composeexpensetracker.ui.navgraph.ScreenRoute
 import com.std.composeexpensetracker.ui.theme.Zinc
 
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
         Surface(modifier = modifier.fillMaxSize()) {
             ConstraintLayout {
-                val (topRow, card, transactionList, bgImage, listHeader) = createRefs()
+                val (topRow, card, transactionList, bgImage, listHeader, fab) = createRefs()
                 Image(
                     painter = painterResource(R.drawable.top_bg),
                     contentDescription = null,
@@ -75,7 +79,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                     }
 
                     IconButton(
-                        onClick = {},
+                        onClick = { navController.navigate(ScreenRoute.DetailsScreen.route)},
                         modifier = Modifier.align(alignment = Alignment.CenterEnd)) {
                         Icon(imageVector = Icons.Default.Notifications, contentDescription = null, tint = Color.White)
                     }
@@ -85,7 +89,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                     .constrainAs(card) {
                         top.linkTo(topRow.bottom)
                     }
-                    .padding(top = 24.dp))
+                    .padding(top = 24.dp), navController = navController)
 
                 // transaction list header
                 Row(modifier = Modifier
@@ -105,13 +109,20 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                         TransactionItem()
                     }
                 }
+
+                FloatingActionButton(onClick = {}, modifier = Modifier.constrainAs(fab) {
+                    bottom.linkTo(parent.bottom)
+                    end.linkTo(parent.end)
+                }.padding(end = 16.dp, bottom = 16.dp)) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = null)
+                }
             }
         }
 }
 
 
 @Composable
-fun MainCardView(modifier: Modifier = Modifier) {
+fun MainCardView(modifier: Modifier = Modifier, navController: NavController) {
     Card(
         elevation = CardDefaults.cardElevation(16.dp),
         colors = CardDefaults.cardColors(containerColor = Zinc),
@@ -125,7 +136,7 @@ fun MainCardView(modifier: Modifier = Modifier) {
                     Text("Total Balance", color = Color.White)
                     Text("Rs. 2993.09", fontWeight = FontWeight.Bold, fontSize = 22.sp, color = Color.White)
                 }
-                IconButton(onClick = {}) {
+                IconButton(onClick = { navController.navigate(ScreenRoute.AddTransactionScreen.route) }) {
                     Icon(imageVector = Icons.Default.Menu, contentDescription = null, tint = Color.White)
                 }
             }
@@ -173,7 +184,7 @@ fun IncomeExpenseText(label: String, amount: String) {
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen()
+//    HomeScreen()
 }
 
 val dummy = listOf(

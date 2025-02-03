@@ -1,4 +1,4 @@
-package com.std.composeexpensetracker.ui.feature
+package com.std.composeexpensetracker.ui.feature.details
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
 import com.std.composeexpensetracker.R
 import com.std.composeexpensetracker.ui.components.TopRowHeader
 import com.std.composeexpensetracker.ui.theme.Zinc
@@ -44,7 +45,7 @@ import com.std.composeexpensetracker.ui.theme.Zinc
 
 
 @Composable
-fun TransactionDetailsScreen(modifier: Modifier = Modifier) {
+fun TransactionDetailsScreen(modifier: Modifier = Modifier, navController: NavController) {
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         // create refs
         val (bg, topHeaderRow, mainCol) = createRefs()
@@ -60,7 +61,7 @@ fun TransactionDetailsScreen(modifier: Modifier = Modifier) {
 
         TopRowHeader(modifier = Modifier.constrainAs(topHeaderRow){
             top.linkTo(parent.top)
-        }, title = "Transaction Details")
+        }, title = "Transaction Details", navController = navController)
 
         MainColumnDataForm(modifier = Modifier
             .constrainAs(mainCol) {
@@ -150,5 +151,5 @@ fun DataFormItem(label: String, value: String) {
 @Preview(showBackground = true)
 @Composable
 private fun TransactionDetailsScreenPreview() {
-    TransactionDetailsScreen()
+//    TransactionDetailsScreen()
 }
