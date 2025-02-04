@@ -60,22 +60,16 @@ dependencies {
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.navigation.compose)
 
-
     implementation(libs.koin.core)  // Latest version may vary, check Koin's website
-
     // Koin Android for Android-specific features (like ViewModel injection)
     implementation(libs.koin.android)
-
     // Koin for ViewModel
-    implementation(libs.koin.androidx.viewmodel)
-
+//    implementation(libs.koin.androidx.viewmodel)
     // Koin for Jetpack Compose (if you're using Jetpack Compose)
     implementation(libs.koin.androidx.compose)
-
-
-
     implementation(libs.androidx.room.runtime)
     // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
     // See Add the KSP plugin to your project
+    implementation (libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 }

@@ -21,6 +21,11 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -29,8 +34,12 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.std.composeexpensetracker.R
+import com.std.composeexpensetracker.data.local.model.Transaction
 import com.std.composeexpensetracker.ui.components.TopRowHeader
+import com.std.composeexpensetracker.ui.feature.MainViewModel
+import com.std.composeexpensetracker.ui.feature.home.TransactionItem
 import com.std.composeexpensetracker.ui.theme.Zinc
+import org.koin.androidx.compose.getViewModel
 
 /* Planning
 * Using constraint layout
@@ -42,6 +51,9 @@ import com.std.composeexpensetracker.ui.theme.Zinc
 
 @Composable
 fun AddIncomeExpenseScreen(modifier: Modifier = Modifier, navController: NavController) {
+
+    val viewmodel: MainViewModel = getViewModel()
+
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
         // create refs
         val (bg, topRow, dataFormCard) = createRefs()
@@ -64,13 +76,16 @@ fun AddIncomeExpenseScreen(modifier: Modifier = Modifier, navController: NavCont
         DataFormCard(modifier = Modifier.constrainAs(dataFormCard) {
             top.linkTo(bg.bottom)
             bottom.linkTo(bg.bottom)
-        })
+        }, viewmodel)
     }
 }
 
 
 @Composable
-fun DataFormCard(modifier: Modifier = Modifier) {
+fun DataFormCard(modifier: Modifier = Modifier, viewModel: MainViewModel) {
+
+    val transactionState by viewModel.transactionState // default transaction state (internal state of Data form comp
+
     Card (
         elevation = CardDefaults.cardElevation(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -84,8 +99,8 @@ fun DataFormCard(modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Category")
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = transactionState.category,
+                onValueChange = { viewModel.updateTransactionState(transactionState.copy(category = it)) },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Filled.AccountCircle,
@@ -105,8 +120,8 @@ fun DataFormCard(modifier: Modifier = Modifier) {
 
             Text("Amount")
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = transactionState.amount,
+                onValueChange = { viewModel.updateTransactionState(transactionState.copy(amount = it)) },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Filled.AccountBox,
@@ -134,7 +149,11 @@ fun DataFormCard(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth().height(50.dp))
 
             Spacer(Modifier.height(8.dp))
-            OutlinedButton(onClick = {}, modifier = Modifier.fillMaxWidth()) {
+            OutlinedButton(onClick = {
+                viewModel.addTransaction(transactionState) // reset state by passing default state
+                // add transaction
+                // clear fields (could be done by resetting transactionState)
+            }, modifier = Modifier.fillMaxWidth()) {
                 Icon(imageVector = Icons.Default.Add,
                     contentDescription = null, tint = Zinc)
 
