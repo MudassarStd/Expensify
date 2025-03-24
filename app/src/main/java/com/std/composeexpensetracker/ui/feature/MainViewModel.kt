@@ -5,32 +5,43 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.std.composeexpensetracker.data.local.model.Transaction
-import com.std.composeexpensetracker.data.repository.MainRepositoryImpl
+import com.std.composeexpensetracker.data.local.model.TransactionType
+import com.std.composeexpensetracker.data.repository.MainRepository
+import com.std.composeexpensetracker.ui.state.BalanceState
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val mainRepository: MainRepositoryImpl
+    private val mainRepository: MainRepository
+
 ): ViewModel() {
+    private val _transactionUIState = mutableStateOf(Transaction())
+    val transactionUIState: State<Transaction> = _transactionUIState
 
-    // state management here
-    private val _transactionState = mutableStateOf(Transaction())
-    val transactionState: State<Transaction> get() = _transactionState // read-only state
+    val transactions: StateFlow<List<Transaction>> = mainRepository.getAll()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
-    fun updateTransactionState(updatedState: Transaction) {
-        _transactionState.value = updatedState
+    val balanceState: StateFlow<BalanceState> = combine(
+        mainRepository.getTotalAmount(),
+        mainRepository.getAmountByTransactionType(TransactionType.INCOME),
+        mainRepository.getAmountByTransactionType(TransactionType.EXPENSE)
+    ) { total, income, expense ->
+        BalanceState(total, income, expense)
+    }.stateIn(viewModelScope, SharingStarted.Lazily, BalanceState())
+
+    fun updateTransactionState(transaction: Transaction) {
+        _transactionUIState.value = transaction
+        _transactionUIState.value = Transaction() // reset state
     }
 
-    // handle add event
-    fun addTransaction(transaction: Transaction) {
-        viewModelScope.launch {
-            mainRepository.add(transaction)
-            _transactionState.value = Transaction()  // reset state
-        }
+    fun addTransaction() = viewModelScope.launch {
+        mainRepository.add(transactionUIState.value)
     }
-
-
-    fun saveUser(name: String, age: String) {
-
-    }
-
 }

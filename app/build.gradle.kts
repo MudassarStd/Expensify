@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.koin.core)  // Latest version may vary, check Koin's website
     // Koin Android for Android-specific features (like ViewModel injection)
     implementation(libs.koin.android)
+
     // Koin for ViewModel
 //    implementation(libs.koin.androidx.viewmodel)
     // Koin for Jetpack Compose (if you're using Jetpack Compose)

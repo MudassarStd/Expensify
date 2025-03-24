@@ -84,7 +84,7 @@ fun UserInfoScreen(modifier: Modifier = Modifier) {
 
                 Spacer(Modifier.height(8.dp))
                 OutlinedButton(onClick = {
-                    viewmodel.saveUser(nameState, ageState)
+//                    viewmodel.saveUser(nameState, ageState)
                 }, modifier = Modifier.fillMaxWidth()) {
                     Text("Save", color = Zinc)
                 }

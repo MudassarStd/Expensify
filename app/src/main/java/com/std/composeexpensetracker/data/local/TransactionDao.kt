@@ -1,12 +1,13 @@
 package com.std.composeexpensetracker.data.local
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.std.composeexpensetracker.data.local.model.Transaction
+import com.std.composeexpensetracker.data.local.model.TransactionType
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TransactionDao {
@@ -19,7 +20,12 @@ interface TransactionDao {
     @Delete
     suspend fun delete(transaction: Transaction)
 
-    @Query("select * from `Transaction`")
-    fun getAll(): LiveData<List<Transaction>>
+    @Query("select sum(amount) from `Transaction`")
+    fun getTotalAmount(): Flow<Double>
 
+    @Query("select sum(amount) from `Transaction` where type = :transactionType")
+    fun getAmountByTransactionType(transactionType: TransactionType): Flow<Double>
+
+    @Query("select * from `Transaction`")
+    fun getAll(): Flow<List<Transaction>>
 }

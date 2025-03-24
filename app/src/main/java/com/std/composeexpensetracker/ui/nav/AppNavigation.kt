@@ -1,16 +1,18 @@
-package com.std.composeexpensetracker.ui.navgraph
+package com.std.composeexpensetracker.ui.nav
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.std.composeexpensetracker.ui.feature.MainViewModel
 import com.std.composeexpensetracker.ui.feature.add.AddIncomeExpenseScreen
 import com.std.composeexpensetracker.ui.feature.home.HomeScreen
 import com.std.composeexpensetracker.ui.feature.details.TransactionDetailsScreen
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(viewModel: MainViewModel = koinViewModel()) {
 
     val navController = rememberNavController() // so it can remember nav-stack across config changes
 
@@ -18,8 +20,8 @@ fun AppNavigation() {
     // navHost maintains screen stack over here
     NavHost(navController= navController, startDestination = ScreenRoute.MainScreen.route) {
         // list all possible routes here
-        composable(ScreenRoute.MainScreen.route) { HomeScreen(navController = navController) }
-        composable(ScreenRoute.DetailsScreen.route) { TransactionDetailsScreen(navController = navController) }
-        composable(ScreenRoute.AddTransactionScreen.route) { AddIncomeExpenseScreen(navController = navController) }
+        composable(ScreenRoute.MainScreen.route) { HomeScreen(navController = navController, viewmodel = viewModel) }
+        composable(ScreenRoute.DetailsScreen.route) { TransactionDetailsScreen(navController = navController, viewmodel = viewModel) }
+        composable(ScreenRoute.AddTransactionScreen.route) { AddIncomeExpenseScreen(navController = navController, viewmodel = viewModel) }
     }
 }

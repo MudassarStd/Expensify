@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.std.composeexpensetracker.ui.navgraph.AppNavigation
+import com.std.composeexpensetracker.ui.nav.AppNavigation
 import com.std.composeexpensetracker.ui.theme.ComposeExpenseTrackerTheme
 
 class MainActivity : ComponentActivity() {

@@ -33,6 +33,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.std.composeexpensetracker.R
 import com.std.composeexpensetracker.ui.components.TopRowHeader
+import com.std.composeexpensetracker.ui.feature.MainViewModel
 import com.std.composeexpensetracker.ui.theme.Zinc
 
 
@@ -45,7 +46,7 @@ import com.std.composeexpensetracker.ui.theme.Zinc
 
 
 @Composable
-fun TransactionDetailsScreen(modifier: Modifier = Modifier, navController: NavController) {
+fun TransactionDetailsScreen(modifier: Modifier = Modifier, navController: NavController, viewmodel: MainViewModel) {
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         // create refs
         val (bg, topHeaderRow, mainCol) = createRefs()

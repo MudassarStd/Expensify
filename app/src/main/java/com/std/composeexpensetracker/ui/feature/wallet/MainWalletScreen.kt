@@ -40,10 +40,6 @@ import com.std.composeexpensetracker.ui.components.TopRowHeader
 import com.std.composeexpensetracker.ui.feature.home.TransactionItem
 import com.std.composeexpensetracker.ui.feature.home.dummy
 
-// planning structure
-// Box -> bg -> topRow -> mainColumn
-
-
 @Composable
 fun MainWalletScreen(
     modifier: Modifier = Modifier, ) {
@@ -113,13 +109,12 @@ fun MainColumn(modifier: Modifier = Modifier) {
 
             LazyColumn {
                 items(dummy) {
-                    TransactionItem()
+//                    TransactionItem()
                 }
             }
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
