@@ -33,4 +33,6 @@ class MainRepositoryImpl(
     }
 
     override fun getAll(): Flow<List<Transaction>> = transactionDao.getAll()
+
+    override fun getRecentTransactions(): Flow<List<Transaction>>  = transactionDao.getRecentTransactions()
 }

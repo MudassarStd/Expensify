@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.std.composeexpensetracker.data.local.model.Transaction
 import com.std.composeexpensetracker.data.local.model.TransactionType
 import com.std.composeexpensetracker.data.repository.MainRepository
@@ -24,6 +25,13 @@ class MainViewModel(
     val transactions: StateFlow<List<Transaction>> = mainRepository.getAll()
         .stateIn(
             scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = emptyList()
+        )
+
+    val recentTransactions: StateFlow<List<Transaction>> = mainRepository.getRecentTransactions()
+        .stateIn(
+            scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
@@ -38,10 +46,10 @@ class MainViewModel(
 
     fun updateTransactionState(transaction: Transaction) {
         _transactionUIState.value = transaction
-        _transactionUIState.value = Transaction() // reset state
     }
 
     fun addTransaction() = viewModelScope.launch {
         mainRepository.add(transactionUIState.value)
+        _transactionUIState.value = Transaction() // resets transaction state
     }
 }

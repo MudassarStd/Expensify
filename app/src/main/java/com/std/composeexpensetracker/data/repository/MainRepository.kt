@@ -14,5 +14,6 @@ interface MainRepository {
     fun getAmountByTransactionType(transactionType: TransactionType): Flow<Double>
 
     fun getAll(): Flow<List<Transaction>>
+    fun getRecentTransactions(): Flow<List<Transaction>>
 
 }

@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -58,86 +59,100 @@ fun HomeScreen(
     navController: NavController,
     viewmodel: MainViewModel
 ) {
+    val recentTransactions by viewmodel.recentTransactions.collectAsStateWithLifecycle()
 
-    val transactions by viewmodel.transactions.collectAsStateWithLifecycle()
-
-        Surface(modifier = modifier.fillMaxSize().systemBarsPadding()) {
-            ConstraintLayout {
-                val (topRow, card, transactionList, bgImage, listHeader, fab) = createRefs()
-                Image(
-                    painter = painterResource(R.drawable.top_bg),
-                    contentDescription = null,
-                    modifier = Modifier.constrainAs(bgImage) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    }
-                )
-
-                Box (modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 32.dp, horizontal = 16.dp)
-                    .constrainAs(topRow) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    }) {
-                    Column {
-                        Text("Good morning,", color = Color.White)
-                        Spacer(Modifier.height(4.dp))
-                        Text(
-                            "Mudassar",
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp)
-                    }
-
-                    IconButton(
-                        onClick = { navController.navigate(ScreenRoute.DetailsScreen.route)},
-                        modifier = Modifier.align(alignment = Alignment.CenterEnd)) {
-                        Icon(imageVector = Icons.Default.Notifications, contentDescription = null, tint = Color.White)
-                    }
-                }
-
-                MainCardView(modifier = Modifier
-                    .constrainAs(card) {
-                        top.linkTo(topRow.bottom)
-                    }
-                    .padding(top = 24.dp), navController = navController, viewmodel = viewmodel)
-
-                // transaction list header
-                Row(modifier = Modifier
-                    .constrainAs(listHeader) {
-                        top.linkTo(card.bottom)
-                    }
-                    .padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Text("Transaction History", modifier = Modifier.weight(1f))
-                    TextButton(onClick = {}) { Text("See all") }
-                }
-
-                // transaction list
-                LazyColumn(modifier = Modifier.constrainAs(transactionList) {
-                    top.linkTo(listHeader.bottom)
-                }, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    items(transactions) { transaction ->
-                        TransactionItem(transaction)
-                    }
-                }
-
-                FloatingActionButton(onClick = {
-                    navController.navigate(route = ScreenRoute.AddTransactionScreen.route)
-                }, modifier = Modifier.constrainAs(fab) {
-                    bottom.linkTo(parent.bottom)
+    Surface(modifier = modifier
+        .fillMaxSize()
+        .systemBarsPadding()) {
+        ConstraintLayout {
+            val (topRow, card, transactionList, bgImage, listHeader, fab) = createRefs()
+            Image(
+                painter = painterResource(R.drawable.top_bg),
+                contentDescription = null,
+                modifier = Modifier.constrainAs(bgImage) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                }.padding(end = 16.dp, bottom = 16.dp)) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = null)
+                }
+            )
+
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 32.dp, horizontal = 16.dp)
+                .constrainAs(topRow) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }) {
+                Column {
+                    Text("Good morning,", color = Color.White)
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        "Mudassar",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+                }
+
+                IconButton(
+                    onClick = { navController.navigate(ScreenRoute.DetailsScreen.route) },
+                    modifier = Modifier.align(alignment = Alignment.CenterEnd)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Notifications,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
                 }
             }
+
+            MainCardView(modifier = Modifier
+                .constrainAs(card) {
+                    top.linkTo(topRow.bottom)
+                }
+                .padding(top = 24.dp), navController = navController, viewmodel = viewmodel)
+
+            // transaction list header
+            Row(modifier = Modifier
+                .constrainAs(listHeader) {
+                    top.linkTo(card.bottom)
+                }
+                .padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text("Recent Transactions", modifier = Modifier.weight(1f))
+                TextButton(onClick = {}) { Text("See all") }
+            }
+
+            // transaction list
+            LazyColumn(modifier = Modifier.constrainAs(transactionList) {
+                top.linkTo(listHeader.bottom)
+            }, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                items(recentTransactions) { transaction ->
+                    TransactionItem(transaction)
+                }
+            }
+
+            ExtendedFloatingActionButton(onClick = {
+                navController.navigate(route = ScreenRoute.AddTransactionScreen.route)
+            }, modifier = Modifier
+                .constrainAs(fab) {
+                    bottom.linkTo(parent.bottom)
+                    end.linkTo(parent.end)
+                }
+                .padding(end = 16.dp, bottom = 16.dp)) {
+                Text("Add Transaction")
+                Icon(imageVector = Icons.Default.Add, contentDescription = null)
+            }
         }
+    }
 }
 
 @Composable
-fun MainCardView(modifier: Modifier = Modifier, navController: NavController, viewmodel: MainViewModel) {
+fun MainCardView(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    viewmodel: MainViewModel
+) {
 
     val balanceState by viewmodel.balanceState.collectAsStateWithLifecycle()
 
@@ -148,18 +163,40 @@ fun MainCardView(modifier: Modifier = Modifier, navController: NavController, vi
             .padding(24.dp) // outer padding - margin
             .height(200.dp) // fixed height
     ) {
-        Box(modifier = Modifier.padding(24.dp).fillMaxSize()) {
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.align(Alignment.TopCenter)) {
-                Column (modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Box(modifier = Modifier
+            .padding(24.dp)
+            .fillMaxSize()) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.align(Alignment.TopCenter)
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Text("Total Balance", color = Color.White)
-                    Text("Rs. ${balanceState.totalAmount}", fontWeight = FontWeight.Bold, fontSize = 22.sp, color = Color.White)
+                    Text(
+                        "Rs. ${balanceState.totalAmount}",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 22.sp,
+                        color = Color.White
+                    )
                 }
                 IconButton(onClick = { navController.navigate(ScreenRoute.AddTransactionScreen.route) }) {
-                    Icon(imageVector = Icons.Default.Menu, contentDescription = null, tint = Color.White)
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
                 }
             }
 
-            Row (horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)){
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+            ) {
                 IncomeExpenseText("Income", "${balanceState.totalIncome}")
                 IncomeExpenseText("Expense", "${balanceState.totalExpense}")
             }
@@ -172,8 +209,15 @@ fun MainCardView(modifier: Modifier = Modifier, navController: NavController, vi
 
 @Composable
 fun TransactionItem(transaction: Transaction) {
-    Row (verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 12.dp) ) {
-        Image(imageVector = Icons.Default.ThumbUp, contentDescription = null, modifier = Modifier.size(36.dp))
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(horizontal = 12.dp)
+    ) {
+        Image(
+            imageVector = Icons.Default.ThumbUp,
+            contentDescription = null,
+            modifier = Modifier.size(36.dp)
+        )
         Spacer(Modifier.width(8.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(transaction.category, style = MaterialTheme.typography.titleMedium)
@@ -188,8 +232,12 @@ fun TransactionItem(transaction: Transaction) {
 @Composable
 fun IncomeExpenseText(label: String, amount: String) {
     Column {
-        Row (verticalAlignment = Alignment.CenterVertically){
-            Icon(imageVector = Icons.Default.KeyboardArrowUp, contentDescription = null, tint = Color.White)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowUp,
+                contentDescription = null,
+                tint = Color.White
+            )
             Spacer(Modifier.width(4.dp))
             Text(label, color = Color.White)
         }
@@ -205,5 +253,5 @@ fun HomeScreenPreview() {
 }
 
 val dummy = listOf(
-    1,2,3,4,5
+    1, 2, 3, 4, 5
 )
