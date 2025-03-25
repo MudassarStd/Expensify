@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Notifications
@@ -47,6 +48,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.std.composeexpensetracker.R
 import com.std.composeexpensetracker.data.local.model.Transaction
+import com.std.composeexpensetracker.data.local.model.TransactionType
 import com.std.composeexpensetracker.ui.feature.MainViewModel
 import com.std.composeexpensetracker.ui.nav.ScreenRoute
 import com.std.composeexpensetracker.ui.theme.Zinc
@@ -61,9 +63,11 @@ fun HomeScreen(
 ) {
     val recentTransactions by viewmodel.recentTransactions.collectAsStateWithLifecycle()
 
-    Surface(modifier = modifier
-        .fillMaxSize()
-        .systemBarsPadding()) {
+    Surface(
+        modifier = modifier
+            .fillMaxSize()
+            .systemBarsPadding()
+    ) {
         ConstraintLayout {
             val (topRow, card, transactionList, bgImage, listHeader, fab) = createRefs()
             Image(
@@ -120,7 +124,9 @@ fun HomeScreen(
                 }
                 .padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
                 Text("Recent Transactions", modifier = Modifier.weight(1f))
-                TextButton(onClick = {}) { Text("See all") }
+                TextButton(onClick = {
+                    navController.navigate(ScreenRoute.TransactionsScreen.route)
+                }) { Text("See all") }
             }
 
             // transaction list
@@ -163,9 +169,11 @@ fun MainCardView(
             .padding(24.dp) // outer padding - margin
             .height(200.dp) // fixed height
     ) {
-        Box(modifier = Modifier
-            .padding(24.dp)
-            .fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .padding(24.dp)
+                .fillMaxSize()
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.align(Alignment.TopCenter)
@@ -209,6 +217,9 @@ fun MainCardView(
 
 @Composable
 fun TransactionItem(transaction: Transaction) {
+
+    val isIncome = transaction.type == TransactionType.INCOME // for testing
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(horizontal = 12.dp)
@@ -222,8 +233,13 @@ fun TransactionItem(transaction: Transaction) {
         Column(modifier = Modifier.weight(1f)) {
             Text(transaction.category, style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(6.dp))
-            Text("Date")
+            Text(transaction.date, fontSize = 12.sp)
         }
+        Icon(
+            imageVector = if (isIncome) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+            contentDescription = null,
+            tint = if (isIncome) Color.Green else Color.Red
+        )
         Text("${transaction.amount}", style = MaterialTheme.typography.titleMedium)
     }
 }

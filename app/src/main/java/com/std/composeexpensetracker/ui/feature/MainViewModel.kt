@@ -48,6 +48,10 @@ class MainViewModel(
         _transactionUIState.value = transaction
     }
 
+    fun addDate(date: String) {
+        _transactionUIState.value = _transactionUIState.value.copy(date = date)
+    }
+
     fun addTransaction() = viewModelScope.launch {
         mainRepository.add(transactionUIState.value)
         _transactionUIState.value = Transaction() // resets transaction state

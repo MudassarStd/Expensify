@@ -96,10 +96,13 @@ fun AddIncomeExpenseScreen(
                 end.linkTo(parent.end)
             })
 
-        TopRowHeader(modifier = Modifier
-            .constrainAs(topRow) {
-                top.linkTo(parent.top)
-            }, title = "Add Expense", navController = navController
+        TopRowHeader(
+            modifier = Modifier
+                .constrainAs(topRow) {
+                    top.linkTo(parent.top)
+                }, title = "Add Expense",
+            showTrailingIcon = false,
+            onLeadClick = { navController.popBackStack() }
         )
 
 
@@ -112,6 +115,7 @@ fun AddIncomeExpenseScreen(
         if (showDatePicker) {
             DatePickerExample(onDateSelected = {
                 selectedDate = it
+                viewmodel.addDate(selectedDate)
                 showDatePicker = false
             }) {
                 showDatePicker = false
@@ -152,10 +156,13 @@ fun DataFormCard(
                     viewModel.updateTransactionState(transactionState.copy(type = selectedTransactionType))
                 }, label = { Text("Income") })
                 Spacer(Modifier.width(12.dp))
-                FilterChip(selected = selectedTransactionType == TransactionType.EXPENSE, onClick = {
-                    selectedTransactionType = TransactionType.EXPENSE
-                    viewModel.updateTransactionState(transactionState.copy(type = selectedTransactionType))
-                }, label = { Text("Expense") })
+                FilterChip(
+                    selected = selectedTransactionType == TransactionType.EXPENSE,
+                    onClick = {
+                        selectedTransactionType = TransactionType.EXPENSE
+                        viewModel.updateTransactionState(transactionState.copy(type = selectedTransactionType))
+                    },
+                    label = { Text("Expense") })
             }
             Text("Category")
             OutlinedTextField(

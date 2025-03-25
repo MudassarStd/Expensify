@@ -62,7 +62,7 @@ fun TransactionDetailsScreen(modifier: Modifier = Modifier, navController: NavCo
 
         TopRowHeader(modifier = Modifier.constrainAs(topHeaderRow){
             top.linkTo(parent.top)
-        }, title = "Transaction Details", navController = navController)
+        }, title = "Transaction Details", showTrailingIcon = false)
 
         MainColumnDataForm(modifier = Modifier
             .constrainAs(mainCol) {

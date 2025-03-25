@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.std.composeexpensetracker.data.local.model.Transaction
 
 
 @Database(entities = [Transaction::class], version = 1, exportSchema = false)
+@TypeConverters(DateStringConverter::class)
 abstract class LocalDatabase: RoomDatabase() {
 
     abstract fun transactionDao(): TransactionDao

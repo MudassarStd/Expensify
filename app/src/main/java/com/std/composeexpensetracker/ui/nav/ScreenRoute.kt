@@ -5,4 +5,5 @@ sealed class ScreenRoute(val route: String) {
     data object MainScreen: ScreenRoute("main")
     data object DetailsScreen: ScreenRoute("details")
     data object AddTransactionScreen: ScreenRoute("addTransaction")
+    data object TransactionsScreen: ScreenRoute("transactions")
 }

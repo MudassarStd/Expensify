@@ -50,7 +50,7 @@ fun MainWalletScreen(
     ) {
         Image(painter = painterResource(R.drawable.top_bg), contentDescription = null)
 
-        TopRowHeader(title = "Wallet", modifier = Modifier , navController = null)
+        TopRowHeader(title = "Wallet", modifier = Modifier, showTrailingIcon = false)
 
         MainColumn(Modifier.padding(top = 96.dp))
         
