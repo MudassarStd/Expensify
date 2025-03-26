@@ -145,8 +145,6 @@ fun DataFormCard(
         ?.savedStateHandle
         ?.get<Category>("selectedItem")
 
-
-
     Card(
         elevation = CardDefaults.cardElevation(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
