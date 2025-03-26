@@ -1,6 +1,7 @@
 package com.std.composeexpensetracker.data.repository
 
 import androidx.lifecycle.LiveData
+import com.std.composeexpensetracker.data.local.model.Category
 import com.std.composeexpensetracker.data.local.model.Transaction
 import com.std.composeexpensetracker.data.local.model.TransactionType
 import kotlinx.coroutines.flow.Flow
@@ -16,4 +17,8 @@ interface MainRepository {
     fun getAll(): Flow<List<Transaction>>
     fun getRecentTransactions(): Flow<List<Transaction>>
 
+    // category
+    suspend fun addCategory(category: Category)
+    suspend fun deleteCategory(category: Category)
+    fun getAllCategories(): Flow<List<Category>>
 }

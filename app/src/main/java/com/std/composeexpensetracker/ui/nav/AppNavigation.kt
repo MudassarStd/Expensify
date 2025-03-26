@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.std.composeexpensetracker.ui.feature.MainViewModel
 import com.std.composeexpensetracker.ui.feature.add.AddIncomeExpenseScreen
+import com.std.composeexpensetracker.ui.feature.category.CategoryScreen
 import com.std.composeexpensetracker.ui.feature.home.HomeScreen
 import com.std.composeexpensetracker.ui.feature.details.TransactionDetailsScreen
 import com.std.composeexpensetracker.ui.feature.transactions.TransactionsScreen
@@ -24,6 +25,7 @@ fun AppNavigation(viewModel: MainViewModel = koinViewModel()) {
         composable(ScreenRoute.MainScreen.route) { HomeScreen(navController = navController, viewmodel = viewModel) }
         composable(ScreenRoute.DetailsScreen.route) { TransactionDetailsScreen(navController = navController, viewmodel = viewModel) }
         composable(ScreenRoute.AddTransactionScreen.route) { AddIncomeExpenseScreen(navController = navController, viewmodel = viewModel) }
-        composable(ScreenRoute.TransactionsScreen.route) { TransactionsScreen(navController = navController, viewModel = viewModel) }
+        composable(ScreenRoute.TransactionsScreen.route) { TransactionsScreen(navController = navController) }
+        composable(ScreenRoute.CategoryScreen.route) { CategoryScreen(navController = navController) }
     }
 }

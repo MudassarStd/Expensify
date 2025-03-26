@@ -57,12 +57,15 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.std.composeexpensetracker.R
+import com.std.composeexpensetracker.data.local.model.Category
 import com.std.composeexpensetracker.data.local.model.TransactionType
 import com.std.composeexpensetracker.data.repository.MainRepositoryImpl
 import com.std.composeexpensetracker.ui.components.TopRowHeader
 import com.std.composeexpensetracker.ui.events.AddTransactionEvents
 import com.std.composeexpensetracker.ui.feature.MainViewModel
+import com.std.composeexpensetracker.ui.nav.ScreenRoute
 import com.std.composeexpensetracker.ui.theme.Zinc
+import com.std.composeexpensetracker.util.DateTimeUtils
 import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
 import java.text.SimpleDateFormat
@@ -75,6 +78,7 @@ fun AddIncomeExpenseScreen(
     navController: NavController,
     viewmodel: MainViewModel
 ) {
+
 
     var selectedDate by remember { mutableStateOf("") }
     var showDatePicker by remember { mutableStateOf(false) }
@@ -108,14 +112,14 @@ fun AddIncomeExpenseScreen(
 
         DataFormCard(modifier = Modifier.constrainAs(dataFormCard) {
             top.linkTo(topRow.bottom)
-        }, viewmodel, selectedDate) {
+        }, viewmodel, navController = navController, selectedDate) {
             showDatePicker = true
         }
 
         if (showDatePicker) {
             DatePickerExample(onDateSelected = {
-                selectedDate = it
-                viewmodel.addDate(selectedDate)
+                selectedDate = DateTimeUtils.formatDate(it)
+                viewmodel.addDate(it)
                 showDatePicker = false
             }) {
                 showDatePicker = false
@@ -128,6 +132,7 @@ fun AddIncomeExpenseScreen(
 fun DataFormCard(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel,
+    navController: NavController,
     selectedDate: String,
     showDatePicker: () -> Unit
 ) {
@@ -135,6 +140,12 @@ fun DataFormCard(
     val transactionState by viewModel.transactionUIState
     var amountText by remember { mutableStateOf("") }
     var selectedTransactionType by remember { mutableStateOf(TransactionType.INCOME) }
+
+    val selectedItem = navController.currentBackStackEntry
+        ?.savedStateHandle
+        ?.get<Category>("selectedItem")
+
+
 
     Card(
         elevation = CardDefaults.cardElevation(16.dp),
@@ -166,7 +177,7 @@ fun DataFormCard(
             }
             Text("Category")
             OutlinedTextField(
-                value = transactionState.category,
+                value = selectedItem?.name ?: "",
                 onValueChange = { viewModel.updateTransactionState(transactionState.copy(category = it)) },
                 leadingIcon = {
                     Icon(
@@ -178,9 +189,12 @@ fun DataFormCard(
                     Text("Netflix")
                 },
                 trailingIcon = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {
+                            navController.navigate(ScreenRoute.CategoryScreen.route)
+                    }) {
+
                         Icon(
-                            imageVector = Icons.Filled.KeyboardArrowRight,
+                            imageVector = Icons.Filled.DateRange,
                             contentDescription = null,
                         )
                     }
@@ -256,24 +270,25 @@ fun DataFormCard(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerExample(
-    onDateSelected: (String) -> Unit,
+    onDateSelected: (Long) -> Unit,
     onDismiss: () -> Unit
 ) {
     val datePickerState = rememberDatePickerState()
     var dateSelected by remember { mutableStateOf("") }
 
-    if (datePickerState.selectedDateMillis != null) {
-        dateSelected = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-            .format(Date(datePickerState.selectedDateMillis!!))
-    }
+//    if (datePickerState.selectedDateMillis != null) {
+//        dateSelected = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+//            .format(Date(datePickerState.selectedDateMillis!!))
+//    }
 
     DatePickerDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = {
-                if (dateSelected.isNotEmpty()) {
-                    onDateSelected(dateSelected)
-                }
+//                if (dateSelected.isNotEmpty()) {
+//                    onDateSelected(dateSelected)
+//                }
+                datePickerState.selectedDateMillis?.let(onDateSelected)
                 onDismiss()
             }) {
                 Text("Ok")

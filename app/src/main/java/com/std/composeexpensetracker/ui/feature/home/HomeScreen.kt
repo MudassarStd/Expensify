@@ -52,6 +52,7 @@ import com.std.composeexpensetracker.data.local.model.TransactionType
 import com.std.composeexpensetracker.ui.feature.MainViewModel
 import com.std.composeexpensetracker.ui.nav.ScreenRoute
 import com.std.composeexpensetracker.ui.theme.Zinc
+import com.std.composeexpensetracker.util.DateTimeUtils
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -233,7 +234,7 @@ fun TransactionItem(transaction: Transaction) {
         Column(modifier = Modifier.weight(1f)) {
             Text(transaction.category, style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(6.dp))
-            Text(transaction.date, fontSize = 12.sp)
+            Text(DateTimeUtils.formatDate(transaction.date), fontSize = 12.sp)
         }
         Icon(
             imageVector = if (isIncome) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,

@@ -11,7 +11,7 @@ data class Transaction(
     val type: TransactionType = TransactionType.INCOME,
     val category: String = "",
     val amount: Double = 0.0,
-    val date: String = "",
+    val date: Long = 0L,
 )
 
 enum class TransactionType {

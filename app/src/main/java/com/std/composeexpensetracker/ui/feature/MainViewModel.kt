@@ -22,12 +22,7 @@ class MainViewModel(
     private val _transactionUIState = mutableStateOf(Transaction())
     val transactionUIState: State<Transaction> = _transactionUIState
 
-    val transactions: StateFlow<List<Transaction>> = mainRepository.getAll()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = emptyList()
-        )
+
 
     val recentTransactions: StateFlow<List<Transaction>> = mainRepository.getRecentTransactions()
         .stateIn(
@@ -48,7 +43,7 @@ class MainViewModel(
         _transactionUIState.value = transaction
     }
 
-    fun addDate(date: String) {
+    fun addDate(date: Long) {
         _transactionUIState.value = _transactionUIState.value.copy(date = date)
     }
 
