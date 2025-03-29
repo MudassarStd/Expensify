@@ -32,14 +32,17 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.std.composeexpensetracker.data.local.model.TransactionType
@@ -93,8 +96,7 @@ fun FilterSheetModal(
     onDismiss: () -> Unit
 ) {
 
-    val filterModalState by viewModel.filterModalState
-
+    val filterModalState by viewModel.filterModalState.collectAsStateWithLifecycle()
     val categories by categoryViewModel.categories.collectAsStateWithLifecycle()
 
     val sheetState = rememberModalBottomSheetState()
@@ -105,18 +107,27 @@ fun FilterSheetModal(
     var selectedEndDate by remember { mutableStateOf("End Date") }
 
     var isStartDate by remember { mutableStateOf(false) }
+    var startDate by remember { mutableLongStateOf(0L) }
+
+    var invalidDateRange by remember { mutableStateOf(false) }
 
     if (showDatePicker) {
         DatePickerExample(onDateSelected = { dateLong ->
             val date = DateTimeUtils.formatDate(dateLong)
             if (isStartDate) {
                 selectedStartDate = date
-                viewModel.updateFilterModalState(filterModalState.copy(startDate = dateLong))
+                startDate = dateLong
+                viewModel.filterEvent(FilterEvent.StartDate(dateLong))
                 Log.d("TestingStartDate", "isStartDate")
             } else {
                 selectedEndDate = date
-                viewModel.updateFilterModalState(filterModalState.copy(endDate = dateLong))
-                Log.d("TestingStartDate", "isEndDate")
+                if (startDate < dateLong) {
+                    viewModel.filterEvent(FilterEvent.EndDate(dateLong))
+                    Log.d("TestingStartDate", "isEndDate")
+                    invalidDateRange = false
+                } else {
+                    invalidDateRange = true
+                }
             }
         }) {
             showDatePicker = false
@@ -142,7 +153,8 @@ fun FilterSheetModal(
             ) {
                 Text("Filter Transactions", fontWeight = FontWeight.Bold)
                 TextButton(onClick = {
-                    viewModel.resetFilterState()
+                    viewModel.filterEvent(FilterEvent.Reset)
+                    invalidDateRange = false
                     selectedStartDate = "Start Date"
                     selectedEndDate = "End Date"
                 }) {
@@ -184,16 +196,25 @@ fun FilterSheetModal(
                 )
             }
 
+            if (invalidDateRange) {
+                Text("Start date should be less than end date", color = Color.Red, fontSize = 12.sp)
+            }
+
             Text("Transaction Type", fontWeight = FontWeight.Bold)
             Row {
                 FilterChip(
+                    selected = filterModalState.type == TransactionType.ALL,
+                    onClick = { viewModel.filterEvent(FilterEvent.Type(TransactionType.ALL)) },
+                    label = { Text("All") })
+                Spacer(Modifier.width(12.dp))
+                FilterChip(
                     selected = filterModalState.type == TransactionType.INCOME,
-                    onClick = { viewModel.updateFilterModalState(filterModalState.copy(type = TransactionType.INCOME)) },
+                    onClick = { viewModel.filterEvent(FilterEvent.Type(TransactionType.INCOME)) },
                     label = { Text("Income") })
                 Spacer(Modifier.width(12.dp))
                 FilterChip(
                     selected = filterModalState.type == TransactionType.EXPENSE,
-                    onClick = { viewModel.updateFilterModalState(filterModalState.copy(type = TransactionType.EXPENSE)) },
+                    onClick = { viewModel.filterEvent(FilterEvent.Type(TransactionType.EXPENSE)) },
                     label = { Text("Expense") })
             }
             Text("Amount", fontWeight = FontWeight.Bold)
@@ -201,12 +222,12 @@ fun FilterSheetModal(
             Row {
                 FilterChip(
                     selected = filterModalState.amountOrder == AmountOrder.Highest,
-                    onClick = { viewModel.updateFilterModalState(filterModalState.copy(amountOrder = AmountOrder.Highest)) },
+                    onClick = { viewModel.filterEvent(FilterEvent.Order(AmountOrder.Highest)) },
                     label = { Text("Highest") })
                 Spacer(Modifier.width(12.dp))
                 FilterChip(
                     selected = filterModalState.amountOrder == AmountOrder.Lowest,
-                    onClick = { viewModel.updateFilterModalState(filterModalState.copy(amountOrder = AmountOrder.Lowest))} ,
+                    onClick = { viewModel.filterEvent(FilterEvent.Order(AmountOrder.Lowest)) },
                     label = { Text("Lowest") })
             }
 
@@ -216,8 +237,14 @@ fun FilterSheetModal(
                 columns = StaggeredGridCells.Fixed(3),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(categories) {
-                    AssistChip(onClick = {}, label = { Text(it.name) })
+                items(categories) { category ->
+                    FilterChip(
+                        onClick = {
+                            viewModel.filterEvent(FilterEvent.AddCategory(category.name))
+                        },
+                        label = { Text(category.name) },
+                        selected = filterModalState.selectedCategory.contains(category)
+                    )
                 }
             }
             if (categories.isEmpty()) {
@@ -233,14 +260,6 @@ fun FilterSheetModal(
         }
     }
 }
-
-
-data class FilterModel(
-    val startDate: Long,
-    val endDate: Long,
-    val type: TransactionType,
-    val category: List<String>
-)
 
 //val categories = emptyList<String>()
 val categories = listOf(

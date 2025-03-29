@@ -1,5 +1,6 @@
 package com.std.composeexpensetracker.di
 
+import com.std.composeexpensetracker.test.presentation.LoginViewModel
 import com.std.composeexpensetracker.ui.feature.MainViewModel
 import com.std.composeexpensetracker.ui.feature.category.CategoryViewModel
 import com.std.composeexpensetracker.ui.feature.transactions.TransactionsViewModel
@@ -11,4 +12,8 @@ val viewModelModule  = module {
     viewModel { MainViewModel(get()) }
     viewModel { TransactionsViewModel(get()) }
     viewModel { CategoryViewModel(get()) }
+
+
+    // test viewmodel
+    viewModel { LoginViewModel() }
 }
